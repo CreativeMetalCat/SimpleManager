@@ -27,23 +27,55 @@
     <QtRcc Include="SimpleManager.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="SimpleManager.ui">
-      <Filter>Resource Files</Filter>
-    </QtUic>
     <QtMoc Include="SimpleManager.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <ClCompile Include="SimpleManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ResourceCompile Include="$pro_name$.rc">
-    </ResourceCompile>
-    <None Include="$pro_name$.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="$pro_name$.def">
-      <Filter>Resource Files</Filter>
-    </None>
-
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UserManagerItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleSelectionWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="UserManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UserManagerItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="RoleSelectionWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="UserManager.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="SimpleManager.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UserManagerItem.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RoleSelectionWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
