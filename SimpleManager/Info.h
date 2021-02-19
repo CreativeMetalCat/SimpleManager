@@ -1,5 +1,6 @@
 #pragma once
 #include <QString>
+#include <QVector>
 
 //This namespace contains structs that act more or less as copy of the DB's tables strurcts
 namespace ManagerInfo
@@ -11,5 +12,13 @@ namespace ManagerInfo
 		QString Name;
 	};
 
+	struct SUserInfo
+	{
+		int Id = 0;
+
+		QString Name;
+
+		QVector<int> Roles;
+	};
 
 }

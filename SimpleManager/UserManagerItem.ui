@@ -17,9 +17,16 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="label_UserName">
        <property name="text">
-        <string>TextLabel</string>
+        <string>Name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_Roles">
+       <property name="text">
+        <string>Roles</string>
        </property>
       </widget>
      </item>

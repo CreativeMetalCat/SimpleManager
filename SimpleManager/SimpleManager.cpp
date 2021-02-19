@@ -1,5 +1,6 @@
 #include "SimpleManager.h"
 #include "RoleSelectionWindow.h"
+#include "UserManager.h"
 
 SimpleManager::SimpleManager(QWidget *parent)
     : QMainWindow(parent)
@@ -7,6 +8,9 @@ SimpleManager::SimpleManager(QWidget *parent)
     ui.setupUi(this);
     QSqlDatabase Database = QSqlDatabase::addDatabase("QSQLITE");
     Database.setDatabaseName("Users.db");
-    RoleSelectionWindow* selection = new RoleSelectionWindow(Database, this);
-    selection->show();
+    if (Database.open())
+    {
+        UserManager* selection = new UserManager(Database, this);
+        selection->show();
+    }
 }
