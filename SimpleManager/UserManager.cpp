@@ -60,6 +60,7 @@ void UserManager::GenerateUserList()
 			query.value(record.indexOf("Name")).toString(),
 			RoleIds
 			},
+			DataBase,
 			this);
 
 		scrollBox->addWidget(item);

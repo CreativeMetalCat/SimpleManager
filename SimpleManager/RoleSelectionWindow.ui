@@ -25,10 +25,17 @@
         <x>0</x>
         <y>0</y>
         <width>380</width>
-        <height>280</height>
+        <height>251</height>
        </rect>
       </property>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>

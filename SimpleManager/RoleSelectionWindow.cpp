@@ -1,8 +1,9 @@
 #include "RoleSelectionWindow.h"
 #include <QCheckBox>
+#include <QDebug>
 
-RoleSelectionWindow::RoleSelectionWindow(QSqlDatabase dataBase, QWidget *parent)
-	: QDialog(parent)
+RoleSelectionWindow::RoleSelectionWindow(SUserInfo user, QSqlDatabase dataBase, QWidget *parent)
+	: QDialog(parent),UserInfo(user),Roles(user.Roles)
 {
 	ui.setupUi(this);
 
@@ -18,19 +19,52 @@ RoleSelectionWindow::RoleSelectionWindow(QSqlDatabase dataBase, QWidget *parent)
 		dataBase.open();
 	}
 	GenerateRoleList();
+
+	connect(ui.buttonBox, &QDialogButtonBox::accepted, this, &RoleSelectionWindow::AcceptChanges);
+
+	connect(ui.buttonBox, &QDialogButtonBox::rejected, this, [this]()
+	{
+		close();
+	});
+}
+
+void RoleSelectionWindow::AcceptChanges()
+{
+	Roles = QVector<int>();
+	for (auto it = Checkboxes.begin(); it != Checkboxes.end(); ++it)
+	{
+		if ((*it)->isChecked())
+		{
+			Roles.append((*it)->property("Id").toInt());
+		}
+	}
+
+	emit OnRolesChosen(Roles);
+	close();
 }
 
 RoleSelectionWindow::~RoleSelectionWindow()
 {
 }
 
+
 void RoleSelectionWindow::GenerateRoleList()
 {
+
 	QSqlQuery query;
-	query.exec("SELECT Name FROM Roles");
+	query.exec("SELECT Name,Id FROM Roles");
+	QSqlRecord record = query.record();
 	while (query.next())
 	{
-		QCheckBox* checkBox = new QCheckBox(query.value(0).toString(), this);
+		int id = query.value(record.indexOf("Id")).toInt();
+		QCheckBox* checkBox = new QCheckBox(query.value(record.indexOf("Name")).toString(), this);
+		checkBox->setProperty("Id", id);
+
+		checkBox->setChecked(UserInfo.Roles.indexOf(id) != -1);
+		
+
 		scrollBox->addWidget(checkBox);
+
+		Checkboxes.append(checkBox);
 	}
 }
