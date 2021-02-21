@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClCompile Include="RoleSelectionWindow.cpp" />
     <ClCompile Include="UserAdditionWindow.cpp" />
+    <ClCompile Include="UserLogInDialog.cpp" />
     <ClCompile Include="UserManager.cpp" />
     <ClCompile Include="UserManagerItem.cpp" />
     <QtRcc Include="SimpleManager.qrc" />
@@ -97,6 +98,7 @@
     <ClCompile Include="SimpleManager.cpp" />
     <ClCompile Include="main.cpp" />
     <QtUic Include="UserAdditionWindow.ui" />
+    <QtUic Include="UserLogInDialog.ui" />
     <QtUic Include="UserManager.ui" />
     <QtUic Include="UserManagerItem.ui" />
   </ItemGroup>
@@ -111,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Info.h" />
+    <QtMoc Include="UserLogInDialog.h" />
     <QtMoc Include="UserAdditionWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
