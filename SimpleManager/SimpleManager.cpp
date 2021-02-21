@@ -14,11 +14,12 @@ SimpleManager::SimpleManager(QWidget *parent)
     {
         UserLogInDialog* dialog = new UserLogInDialog(Database, this);
         dialog->show();
-        connect(dialog, &UserLogInDialog::OnLogInSuccessful, this, [this](ManagerInfo::SUserInfo info)
+
+        connect(dialog, &UserLogInDialog::OnLogInSuccessful, this, [this,Database](ManagerInfo::SUserInfo info)
         {
-            qWarning() << info.Password;
+            //once we succesfully loged in -> open the manager
+            UserManager* selection = new UserManager(info,Database, this);
+            selection->show();
         });
-        UserManager* selection = new UserManager(Database, this);
-        selection->show();
     }
 }

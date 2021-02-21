@@ -8,8 +8,8 @@
 #include "UserAdditionWindow.h"
 
 
-UserManager::UserManager(QSqlDatabase dataBase, QWidget *parent)
-	: QWidget(parent),DataBase(dataBase)
+UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
+	: QWidget(parent),DataBase(dataBase),CurrentUserInfo(currentUserInfo)
 {
 	ui.setupUi(this);
 
@@ -111,7 +111,7 @@ void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 	query.bindValue(":ContactInfo", ContactInfoString);
 
 	//TODO: REPLACE PLACEHOLDER(it should read values from current user info)
-	query.bindValue(":TableSetId", 0);
+	query.bindValue(":TableSetId", CurrentUserInfo.TableSetId);
 
 	query.exec();
 }

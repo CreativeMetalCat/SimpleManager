@@ -11,7 +11,7 @@ class UserManager : public QWidget
 	Q_OBJECT
 
 public:
-	UserManager(QSqlDatabase dataBase,QWidget *parent = Q_NULLPTR);
+	UserManager(ManagerInfo::SUserInfo currentUserInfo,QSqlDatabase dataBase,QWidget *parent = Q_NULLPTR);
 	~UserManager();
 protected:
 	QSqlDatabase DataBase;
@@ -25,6 +25,8 @@ private slots:
 private:
 
 	void WriteNewUser(ManagerInfo::SUserInfo userInfo);
+
+	ManagerInfo::SUserInfo CurrentUserInfo;
 
 	Ui::UserManager ui;
 
