@@ -47,6 +47,9 @@
     <ClCompile Include="RoleSelectionWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UserAdditionWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UserManager.h">
@@ -56,6 +59,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="RoleSelectionWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="UserAdditionWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -70,6 +76,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="RoleSelectionWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UserAdditionWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

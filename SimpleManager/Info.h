@@ -1,6 +1,7 @@
 #pragma once
 #include <QString>
 #include <QVector>
+#include <QJsonObject>
 
 //This namespace contains structs that act more or less as copy of the DB's tables strurcts
 namespace ManagerInfo
@@ -19,6 +20,12 @@ namespace ManagerInfo
 		QString Name;
 
 		QVector<int> Roles;
+		
+		QString Password;
+
+		int TableSetId = 0;
+
+		QJsonObject ContactInfo;
 	};
 
 }

@@ -20,6 +20,8 @@ public:
 	SUserInfo UserInfo;
 private slots:
 	void RecordRoleChanges(QVector<int> roles);
+
+
 private:
 
 	QSqlDatabase DataBase;

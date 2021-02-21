@@ -22,10 +22,7 @@ RoleSelectionWindow::RoleSelectionWindow(SUserInfo user, QSqlDatabase dataBase, 
 
 	connect(ui.buttonBox, &QDialogButtonBox::accepted, this, &RoleSelectionWindow::AcceptChanges);
 
-	connect(ui.buttonBox, &QDialogButtonBox::rejected, this, [this]()
-	{
-		close();
-	});
+	connect(ui.buttonBox, &QDialogButtonBox::rejected, this, [this]() {close(); });
 }
 
 void RoleSelectionWindow::AcceptChanges()

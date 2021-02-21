@@ -4,6 +4,8 @@
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QPushButton>
+#include "UserAdditionWindow.h"
 
 
 UserManager::UserManager(QSqlDatabase dataBase, QWidget *parent)
@@ -19,6 +21,15 @@ UserManager::UserManager(QSqlDatabase dataBase, QWidget *parent)
 	{
 		GenerateUserList();
 	}
+
+	connect(ui.button_AddUser, &QPushButton::clicked, this, &UserManager::ShowUserCreationWindow);
+}
+
+void UserManager::ShowUserCreationWindow()
+{
+	UserAdditionWindow* userAdd = new UserAdditionWindow(this);
+	userAdd->show();
+	connect(userAdd, &UserAdditionWindow::OnUserCreationFinished, this, &UserManager::WriteNewUser);
 }
 
 UserManager::~UserManager()
@@ -65,4 +76,42 @@ void UserManager::GenerateUserList()
 
 		scrollBox->addWidget(item);
 	}
+}
+
+void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
+{
+	QString RoleString;
+	for (auto it = userInfo.Roles.begin(); it != userInfo.Roles.end(); ++it)
+	{
+		RoleString += QString::number(*it);
+		//if there is still something else we have to append comma otherwise JSON file won't work
+		if ((it + 1) != userInfo.Roles.end())
+		{
+			RoleString += ",";
+		}
+	}
+
+	QString ContactInfoString;
+	QStringList keys = userInfo.ContactInfo.keys();
+	for (auto it = keys.begin(); it != keys.end(); ++it)
+	{
+		ContactInfoString += "\"" + (*it) + "\":\"" + userInfo.ContactInfo.value((*it)).toString() + "\"";
+		//if there is still something else we have to append comma otherwise JSON file won't work
+		if ((it + 1) != keys.end())
+		{
+			ContactInfoString += ",";
+		}
+	}
+
+	QSqlQuery query;
+	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId)");
+	query.bindValue(":Name", userInfo.Name);
+	query.bindValue(":Password", userInfo.Password);
+	query.bindValue(":RoleId","'{\"roles\":[" + RoleString + "]}'");
+	query.bindValue(":ContactInfo", ContactInfoString);
+
+	//TODO: REPLACE PLACEHOLDER(it should read values from current user info)
+	query.bindValue(":TableSetId", 0);
+
+	query.exec();
 }

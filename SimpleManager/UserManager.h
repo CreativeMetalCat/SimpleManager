@@ -19,7 +19,13 @@ protected:
 	/// Generates a list of users based on data from data table
 	/// </summary>
 	void GenerateUserList();
+
+private slots:
+	void ShowUserCreationWindow();
 private:
+
+	void WriteNewUser(ManagerInfo::SUserInfo userInfo);
+
 	Ui::UserManager ui;
 
 	QWidget* scrollWidget;
