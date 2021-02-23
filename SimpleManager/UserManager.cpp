@@ -152,20 +152,26 @@ void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 	}
 
 	QSqlQuery query;
-	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);SELECT * FROM TableSets Where id = last_insert_rowid()");
+	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);");
 	query.bindValue(":Name", userInfo.Name);
 	query.bindValue(":Password", userInfo.Password);
-	query.bindValue(":RoleId","'{\"roles\":[" + RoleString + "]}'");
+	query.bindValue(":RoleId", "'{\"roles\":[" + RoleString + "]}'");
 	query.bindValue(":ContactInfo", ContactInfoString);
 	query.bindValue(":TableSetId", CurrentUserInfo.TableSetId);
 
 	//this adds the user and returns the data at the same time
-	query.exec();
+	if (query.exec())
+	{
+		query.exec("SELECT * FROM TableSets Where id = last_insert_rowid()");
+		QSqlRecord record = query.record();
+		query.next();
+		userInfo.Id = query.value(record.indexOf("Id")).toInt();
 
-	QSqlRecord record = query.record();
-	query.next();
-	userInfo.Id = query.value(record.indexOf("Id")).toInt();
-
-	UserManagerItem* item = new UserManagerItem(userInfo, DataBase, this);
-	scrollBox->addWidget(item);
+		UserManagerItem* item = new UserManagerItem(userInfo, DataBase, this);
+		scrollBox->addWidget(item);
+	}
+	else
+	{
+		QMessageBox::critical(this, "Error!", query.lastError().text());
+	}
 }

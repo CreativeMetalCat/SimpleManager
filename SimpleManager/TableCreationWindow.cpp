@@ -91,7 +91,7 @@ void TableCreationWindow::AttemptToCreateTable()
 
 
 						QSqlQuery query;
-						query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);SELECT * FROM TableSets Where id = last_insert_rowid()");
+						query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);");
 						query.bindValue(":Name", ui.lineEdit_Name->text());
 						query.bindValue(":Password", QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex()));
 						//it's generated like that because the newly created db will only have on, all powerful, role
@@ -102,6 +102,7 @@ void TableCreationWindow::AttemptToCreateTable()
 
 						//this adds the user and returns the data at the same time
 						query.exec();
+						query.exec("SELECT * FROM TableSets Where id = last_insert_rowid()");
 
 						record = query.record();
 						query.next();
