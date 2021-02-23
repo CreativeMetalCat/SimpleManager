@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QDialog>
 
+#include "Info.h"
 #include <QSqlDatabase>
 #include "SqlQueryStrings.h"
 
@@ -15,6 +16,8 @@ class TableCreationWindow : public QDialog
 public:
 	TableCreationWindow(QSqlDatabase database,QWidget *parent = Q_NULLPTR);
 	~TableCreationWindow();
+signals:
+	void OnFinished(ManagerInfo::SUserInfo);
 private slots:
 	void AddNewRoleEdit();
 

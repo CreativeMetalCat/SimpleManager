@@ -14,7 +14,7 @@ class SimpleManager : public QMainWindow
 
 public:
     SimpleManager(QWidget *parent = Q_NULLPTR);
-private slots:
+public slots:
     void GenerateTabs(ManagerInfo::SUserInfo info);
 private:
    

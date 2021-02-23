@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QSqlError>
 #include "TableCreationWindow.h"
+#include "SimpleManager.h"
 
 UserLogInDialog::UserLogInDialog(QSqlDatabase dataBase,QWidget *parent)
 	: QDialog(parent), DataBase(dataBase)
@@ -100,10 +101,12 @@ UserLogInDialog::~UserLogInDialog()
 
 void UserLogInDialog::OpenNewDBCreationWindow()
 {
-	if (auto Parent = qobject_cast<QWidget*>(parent()))
+	if (auto Parent = qobject_cast<SimpleManager*>(parent()))
 	{
 		TableCreationWindow* tableCreator = new TableCreationWindow( DataBase,Parent);
 		close();
 		tableCreator->show();
+
+		connect(tableCreator, &TableCreationWindow::OnFinished, Parent, &SimpleManager::GenerateTabs);
 	}
 }

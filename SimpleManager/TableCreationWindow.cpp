@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <QSqlError>
 #include <QMessageBox>
-#include "Info.h"
 #include <QCryptographicHash>
 #include <QSqlRecord>
 
@@ -87,8 +86,12 @@ void TableCreationWindow::AttemptToCreateTable()
 						//generate encrypted password string
 						user.Password = QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex());
 
+						user.TableSetId = TableSetId;
+
+
+
 						QSqlQuery query;
-						query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId)");
+						query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);SELECT * FROM TableSets Where id = last_insert_rowid()");
 						query.bindValue(":Name", ui.lineEdit_Name->text());
 						query.bindValue(":Password", QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex()));
 						//it's generated like that because the newly created db will only have on, all powerful, role
@@ -97,7 +100,16 @@ void TableCreationWindow::AttemptToCreateTable()
 						//assign user to be a part of newly created db
 						query.bindValue(":TableSetId", TableSetId);
 
+						//this adds the user and returns the data at the same time
 						query.exec();
+
+						record = query.record();
+						query.next();
+
+						user.Id = query.value(record.indexOf("Id")).toInt();
+
+						emit OnFinished(user);
+						close();
 					}
 					qWarning() << query.lastError().text();
 				}

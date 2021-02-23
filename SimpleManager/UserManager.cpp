@@ -6,6 +6,7 @@
 #include <QJsonArray>
 #include <QPushButton>
 #include "UserAdditionWindow.h"
+#include <QSqlRecord>
 
 
 UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
@@ -39,42 +40,45 @@ UserManager::~UserManager()
 void UserManager::GenerateUserList()
 {
 	QSqlQuery query;
-	query.exec("SELECT Id,Name,RoleId FROM Users");
+	query.exec("SELECT Id,Name,RoleId,TableSetId FROM Users");
 	QSqlRecord record = query.record();
 
 	QJsonDocument doc;
 	QJsonObject object;
 	while (query.next())
 	{
-		doc = QJsonDocument::fromJson(query.value(record.indexOf("RoleId")).toByteArray());
-		object = doc.object();
-		// object["roles"]; <- this is the array we are looking for
-
-		QVector<int>RoleIds = QVector<int>();
-
-		//in case something went wrong when writting to the table
-		if (object["roles"].isArray())
+		if (query.value(record.indexOf("TableSetId")).toInt() == CurrentUserInfo.TableSetId)
 		{
-			QJsonArray array = object["roles"].toArray();
-			for (auto it = array.begin(); it != array.end(); ++it)
+			doc = QJsonDocument::fromJson(query.value(record.indexOf("RoleId")).toByteArray());
+			object = doc.object();
+			// object["roles"]; <- this is the array we are looking for
+
+			QVector<int>RoleIds = QVector<int>();
+
+			//in case something went wrong when writting to the table
+			if (object["roles"].isArray())
 			{
-				if ((*it).isDouble())
+				QJsonArray array = object["roles"].toArray();
+				for (auto it = array.begin(); it != array.end(); ++it)
 				{
-					RoleIds.append((*it).toInt());
+					if ((*it).isDouble())
+					{
+						RoleIds.append((*it).toInt());
+					}
 				}
 			}
+
+			UserManagerItem* item = new UserManagerItem(
+				{
+				query.value(record.indexOf("Id")).toInt(),
+				query.value(record.indexOf("Name")).toString(),
+				RoleIds
+				},
+				DataBase,
+				this);
+
+			scrollBox->addWidget(item);
 		}
-
-		UserManagerItem* item = new UserManagerItem(
-			{
-			query.value(record.indexOf("Id")).toInt(),
-			query.value(record.indexOf("Name")).toString(),
-			RoleIds
-			},
-			DataBase,
-			this);
-
-		scrollBox->addWidget(item);
 	}
 }
 
@@ -104,12 +108,20 @@ void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 	}
 
 	QSqlQuery query;
-	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId)");
+	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);SELECT * FROM TableSets Where id = last_insert_rowid()");
 	query.bindValue(":Name", userInfo.Name);
 	query.bindValue(":Password", userInfo.Password);
 	query.bindValue(":RoleId","'{\"roles\":[" + RoleString + "]}'");
 	query.bindValue(":ContactInfo", ContactInfoString);
 	query.bindValue(":TableSetId", CurrentUserInfo.TableSetId);
 
+	//this adds the user and returns the data at the same time
 	query.exec();
+
+	QSqlRecord record = query.record();
+	query.next();
+	userInfo.Id = query.value(record.indexOf("Id")).toInt();
+
+	UserManagerItem* item = new UserManagerItem(userInfo, DataBase, this);
+	scrollBox->addWidget(item);
 }
