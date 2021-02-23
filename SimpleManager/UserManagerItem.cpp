@@ -3,6 +3,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QSqlError>
+#include <QMenu>
+#include <QContextMenuEvent>
 
 UserManagerItem::UserManagerItem(SUserInfo userInfo, QSqlDatabase dataBase,QWidget *parent)
 	: QWidget(parent),UserInfo(userInfo), DataBase(dataBase)
@@ -17,8 +19,18 @@ UserManagerItem::UserManagerItem(SUserInfo userInfo, QSqlDatabase dataBase,QWidg
 	ui.label_Roles->installEventFilter(this);
 }
 
-UserManagerItem::~UserManagerItem()
+
+
+void UserManagerItem::contextMenuEvent(QContextMenuEvent* event)
 {
+	QMenu menu(this);
+	//add actions here
+	menu.exec(event->globalPos());
+}
+
+bool UserManagerItem::IsSelected()
+{
+	return ui.checkBox->isChecked();
 }
 
 void UserManagerItem::RecordRoleChanges(QVector<int> roles)
@@ -59,4 +71,8 @@ bool UserManagerItem::eventFilter(QObject* object, QEvent* event)
 		}
 	}
 	return false;
+}
+
+UserManagerItem::~UserManagerItem()
+{
 }

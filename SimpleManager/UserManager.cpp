@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include "UserAdditionWindow.h"
 #include <QSqlRecord>
+#include <QSqlError>
+#include <QMessageBox>
 
 
 UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
@@ -24,6 +26,8 @@ UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase da
 	}
 
 	connect(ui.button_AddUser, &QPushButton::clicked, this, &UserManager::ShowUserCreationWindow);
+
+	connect(ui.button_Delete, &QPushButton::clicked, this, &UserManager::DeleteSelectedUsers);
 }
 
 void UserManager::ShowUserCreationWindow()
@@ -78,6 +82,46 @@ void UserManager::GenerateUserList()
 				this);
 
 			scrollBox->addWidget(item);
+		}
+	}
+}
+
+void UserManager::DeleteSelectedUsers()
+{
+
+	auto items = scrollWidget->children();
+	if (items.count() > 0)
+	{
+		//ask user if they really want to do that
+		QMessageBox::StandardButton reply = QMessageBox::question(this, "Are you sure?", "You are going to delete " + QString::number(items.count()) + " users", QMessageBox::Yes | QMessageBox::No);
+		if (reply == QMessageBox::Yes)
+		{
+			//if user agreed -> delete them
+			for (auto it = items.begin(); it != items.end(); ++it)
+			{
+				//if this is correct child
+				if (UserManagerItem* item = qobject_cast<UserManagerItem*>(*it))
+				{
+					//if this is selected
+					if (item->IsSelected())
+					{
+						//we delete it
+
+						//delete from table
+						if (DataBase.isOpen())
+						{
+							QSqlQuery query;
+							if (!query.exec("DELETE FROM Users WHERE id = " + QString::number(item->UserInfo.Id)))
+							{
+								qWarning() << query.lastError().text();
+							}
+						}
+
+						//delete object
+						delete item;
+					}
+				}
+			}
 		}
 	}
 }

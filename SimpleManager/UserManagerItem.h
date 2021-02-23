@@ -18,6 +18,11 @@ public:
 	~UserManagerItem();
 
 	SUserInfo UserInfo;
+
+	//if player wants a context menu we create it in this function
+	virtual void contextMenuEvent(QContextMenuEvent* event)override;
+
+	bool IsSelected();
 private slots:
 	void RecordRoleChanges(QVector<int> roles);
 
