@@ -57,7 +57,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="lineEdit_DBName"/>
       </item>
      </layout>
     </widget>
@@ -86,13 +86,20 @@
            <x>0</x>
            <y>0</y>
            <width>360</width>
-           <height>134</height>
+           <height>105</height>
           </rect>
          </property>
         </widget>
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="button_Create">
+     <property name="text">
+      <string>Create</string>
+     </property>
     </widget>
    </item>
   </layout>

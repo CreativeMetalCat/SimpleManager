@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Info.h" />
+    <ClInclude Include="SqlQueryStrings.h" />
     <QtMoc Include="TableCreationWindow.h" />
     <QtMoc Include="UserLogInDialog.h" />
     <QtMoc Include="UserAdditionWindow.h" />

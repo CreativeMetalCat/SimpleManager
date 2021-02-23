@@ -102,7 +102,7 @@ void UserLogInDialog::OpenNewDBCreationWindow()
 {
 	if (auto Parent = qobject_cast<QWidget*>(parent()))
 	{
-		TableCreationWindow* tableCreator = new TableCreationWindow(Parent);
+		TableCreationWindow* tableCreator = new TableCreationWindow( DataBase,Parent);
 		close();
 		tableCreator->show();
 	}
