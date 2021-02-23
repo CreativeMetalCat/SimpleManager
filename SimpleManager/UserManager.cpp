@@ -109,8 +109,6 @@ void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 	query.bindValue(":Password", userInfo.Password);
 	query.bindValue(":RoleId","'{\"roles\":[" + RoleString + "]}'");
 	query.bindValue(":ContactInfo", ContactInfoString);
-
-	//TODO: REPLACE PLACEHOLDER(it should read values from current user info)
 	query.bindValue(":TableSetId", CurrentUserInfo.TableSetId);
 
 	query.exec();
