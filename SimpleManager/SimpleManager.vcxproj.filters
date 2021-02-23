@@ -53,6 +53,9 @@
     <ClCompile Include="UserLogInDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TableCreationWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UserManager.h">
@@ -68,6 +71,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UserLogInDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TableCreationWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -88,6 +94,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="UserLogInDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TableCreationWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QSqlError>
+#include "TableCreationWindow.h"
 
 UserLogInDialog::UserLogInDialog(QSqlDatabase dataBase,QWidget *parent)
 	: QDialog(parent), DataBase(dataBase)
@@ -18,6 +19,8 @@ UserLogInDialog::UserLogInDialog(QSqlDatabase dataBase,QWidget *parent)
 	ui.lineEdit_Id->setValidator(new QIntValidator(this));
 
 	connect(ui.buttonBox, &QDialogButtonBox::accepted, this, &UserLogInDialog::AttemptToLogIn);
+
+	connect(ui.button_CreateNewUser, &QPushButton::clicked, this, &UserLogInDialog::OpenNewDBCreationWindow);
 }
 
 void UserLogInDialog::AttemptToLogIn()
@@ -93,4 +96,14 @@ void UserLogInDialog::AttemptToLogIn()
 
 UserLogInDialog::~UserLogInDialog()
 {
+}
+
+void UserLogInDialog::OpenNewDBCreationWindow()
+{
+	if (auto Parent = qobject_cast<QWidget*>(parent()))
+	{
+		TableCreationWindow* tableCreator = new TableCreationWindow(Parent);
+		close();
+		tableCreator->show();
+	}
 }

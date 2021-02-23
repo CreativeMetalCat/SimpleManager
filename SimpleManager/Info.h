@@ -8,9 +8,16 @@ namespace ManagerInfo
 {
 	struct SRoleInfo
 	{
+		//Role id in table
 		int Id = 0;
 		
 		QString Name;
+
+		//Id of table set that this roles belongs to
+		int TableSetId = 0;
+
+		QVector<int> ChildRoles;
+
 	};
 
 	struct SUserInfo
@@ -23,6 +30,7 @@ namespace ManagerInfo
 		
 		QString Password;
 
+		//Id of table set that this user belongs to
 		int TableSetId = 0;
 
 		QJsonObject ContactInfo;

@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RoleSelectionWindow.cpp" />
+    <ClCompile Include="TableCreationWindow.cpp" />
     <ClCompile Include="UserAdditionWindow.cpp" />
     <ClCompile Include="UserLogInDialog.cpp" />
     <ClCompile Include="UserManager.cpp" />
@@ -97,6 +98,7 @@
     <QtMoc Include="SimpleManager.h" />
     <ClCompile Include="SimpleManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="TableCreationWindow.ui" />
     <QtUic Include="UserAdditionWindow.ui" />
     <QtUic Include="UserLogInDialog.ui" />
     <QtUic Include="UserManager.ui" />
@@ -113,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Info.h" />
+    <QtMoc Include="TableCreationWindow.h" />
     <QtMoc Include="UserLogInDialog.h" />
     <QtMoc Include="UserAdditionWindow.h" />
   </ItemGroup>

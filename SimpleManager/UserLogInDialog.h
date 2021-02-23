@@ -20,6 +20,8 @@ signals:
 	void OnLogInSuccessful(ManagerInfo::SUserInfo);
 private slots:
 	void AttemptToLogIn();
+
+	void OpenNewDBCreationWindow();
 private:
 	QSqlDatabase DataBase;
 
