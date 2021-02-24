@@ -13,7 +13,8 @@ public:
 	RoleManagerWindow(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget* parent = Q_NULLPTR);
 	~RoleManagerWindow();
 
-
+private slots:
+	void DeleteRoles();
 private:
 	QVector<QWidget*> Items = QVector<QWidget*>();
 	void GenerateRoleList();

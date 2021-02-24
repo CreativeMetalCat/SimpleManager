@@ -4,6 +4,8 @@
 #include <QLabel>
 #include <QLayout>
 #include <QCheckBox>
+#include <QSqlError>
+
 RoleManagerWindow::RoleManagerWindow(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
 	: QWidget(parent), DataBase(dataBase), CurrentUserInfo(currentUserInfo)
 {
@@ -17,10 +19,34 @@ RoleManagerWindow::RoleManagerWindow(ManagerInfo::SUserInfo currentUserInfo, QSq
 	{
 		GenerateRoleList();
 	}
+	connect(ui.button_Delete, &QPushButton::clicked, this, &RoleManagerWindow::DeleteRoles);
 }
 
-RoleManagerWindow::~RoleManagerWindow()
+
+void RoleManagerWindow::DeleteRoles() 
 {
+	if (!Items.isEmpty())
+	{
+		QSqlQuery query;
+		query.exec("SELECT Name FROM TableSets WHERE Id = " + QString::number(CurrentUserInfo.TableSetId));
+		query.next();
+		QString TableSetName = query.value(0).toString();
+		for (auto it = Items.begin(); it != Items.end(); ++it)
+		{
+			if ((*it)->property("Checked").toBool())
+			{
+				if (query.exec("DELETE FROM Roles_" + TableSetName + " WHERE Id = " + QString::number((*it)->property("RoleId").toInt())))
+				{
+					Items.removeOne(*it);
+					delete (*it);
+				}
+				else
+				{
+					qWarning() << query.lastError().text();
+				}
+			}
+		}
+	}
 }
 
 void RoleManagerWindow::GenerateRoleList()
@@ -33,13 +59,14 @@ void RoleManagerWindow::GenerateRoleList()
 		query.next();
 		TableSetName = query.value(0).toString();
 
-		query.exec("SELECT Name FROM Roles_" + TableSetName);
+		query.exec("SELECT Name,Id FROM Roles_" + TableSetName);
+		QSqlRecord record = query.record();
 		while (query.next())
 		{
 			QWidget* item = new QWidget(this);
 
 			QHBoxLayout* Layout = new QHBoxLayout(item);
-			QLabel* Name = new QLabel(query.value(0).toString(), item);
+			QLabel* Name = new QLabel(query.value(record.indexOf("Name")).toString(), item);
 			QCheckBox* CheckBox = new QCheckBox(item);
 
 			Layout->addWidget(Name);
@@ -47,6 +74,18 @@ void RoleManagerWindow::GenerateRoleList()
 
 			scrollBox->addWidget(item);
 			Items.append(item);
+
+			item->setProperty("RoleId", query.value(record.indexOf("Id")).toInt());
+
+			connect(CheckBox, &QCheckBox::stateChanged, this, [item, CheckBox]()
+			{
+				item->setProperty("Checked", CheckBox->isChecked());
+			});
 		}
 	}
+}
+
+
+RoleManagerWindow::~RoleManagerWindow()
+{
 }
