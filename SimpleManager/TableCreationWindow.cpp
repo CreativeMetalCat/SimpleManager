@@ -67,7 +67,7 @@ void TableCreationWindow::AttemptToCreateTable()
 			{
 				query.exec("INSERT INTO TableSets (name) VALUES (\"" + ui.lineEdit_DBName->text() + "\")");
 				qWarning() << query.lastError().text();
-				if (query.exec(SqlHelpers::GetRoleTableCreationString("Role", ui.lineEdit_DBName->text())))
+				if (query.exec(SqlHelpers::GetRoleTableCreationString("Roles", ui.lineEdit_DBName->text())))
 				{
 
 					int TableSetId = 0;

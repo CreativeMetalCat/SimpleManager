@@ -86,6 +86,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RoleManagerItem.cpp" />
+    <ClCompile Include="RoleManagerWindow.cpp" />
     <ClCompile Include="RoleSelectionWindow.cpp" />
     <ClCompile Include="TableCreationWindow.cpp" />
     <ClCompile Include="UserAdditionWindow.cpp" />
@@ -93,6 +95,8 @@
     <ClCompile Include="UserManager.cpp" />
     <ClCompile Include="UserManagerItem.cpp" />
     <QtRcc Include="SimpleManager.qrc" />
+    <QtUic Include="RoleManagerItem.ui" />
+    <QtUic Include="RoleManagerWindow.ui" />
     <QtUic Include="RoleSelectionWindow.ui" />
     <QtUic Include="SimpleManager.ui" />
     <QtMoc Include="SimpleManager.h" />
@@ -115,6 +119,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Info.h" />
+    <QtMoc Include="RoleManagerWindow.h" />
+    <QtMoc Include="RoleManagerItem.h" />
     <ClInclude Include="SqlQueryStrings.h" />
     <QtMoc Include="TableCreationWindow.h" />
     <QtMoc Include="UserLogInDialog.h" />

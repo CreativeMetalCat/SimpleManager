@@ -29,7 +29,7 @@ namespace SqlHelpers
 
 #else // define commands compatible with SQLite
 //a simple macro-string for simplification of writing the table creation query
-#define ROLE_TABLE_CREATION_STRING(type,tableName) "CREATE TABLE " + tableType+"_" + tableName + " (Id	INTEGER NOT NULL UNIQUE,Name	TEXT NOT NULL DEFAULT 'Rolename',ChildRoles	TEXT NOT NULL DEFAULT '{}',PRIMARY KEY(Id AUTOINCREMENT))"
+#define ROLE_TABLE_CREATION_STRING(type,tableName) "CREATE TABLE " + tableType+"_" + tableName + " (Id	INTEGER NOT NULL UNIQUE,Name	TEXT NOT NULL DEFAULT 'Rolename' UNIQUE,ChildRoles	TEXT NOT NULL DEFAULT '{}',PRIMARY KEY(Id AUTOINCREMENT))"
 
 
 //a simple macro-string for query for checking if table exists

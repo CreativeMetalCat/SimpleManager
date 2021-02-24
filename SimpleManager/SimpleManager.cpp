@@ -1,4 +1,5 @@
 #include "SimpleManager.h"
+#include "RoleManagerWindow.h"
 
 SimpleManager::SimpleManager(QWidget *parent)
     : QMainWindow(parent)
@@ -20,4 +21,7 @@ void SimpleManager::GenerateTabs(ManagerInfo::SUserInfo info)
     //once we succesfully loged in -> open the manager
     UserManager* selection = new UserManager(info, Database, this);
     ui.tabWidget->addTab(selection, "User Manager");
+
+    RoleManagerWindow* roles = new RoleManagerWindow(info, Database, this);
+    ui.tabWidget->addTab(roles, "Role Manager");
 }

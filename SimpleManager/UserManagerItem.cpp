@@ -17,6 +17,7 @@ UserManagerItem::UserManagerItem(SUserInfo userInfo, QSqlDatabase dataBase,QWidg
 		ui.label_Roles->setText(ui.label_Roles->text() + QString::number((*it)));
 	}
 	ui.label_Roles->installEventFilter(this);
+	ui.label_id->setText(QString::number(UserInfo.Id));
 }
 
 

@@ -56,6 +56,12 @@
     <ClCompile Include="TableCreationWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RoleManagerWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RoleManagerItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UserManager.h">
@@ -74,6 +80,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="TableCreationWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="RoleManagerWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="RoleManagerItem.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -97,6 +109,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="TableCreationWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RoleManagerWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="RoleManagerItem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
