@@ -54,12 +54,9 @@ void RoleManagerWindow::GenerateRoleList()
 	QSqlQuery query;
 	QString TableSetName;
 	//Get table set name
-	if (query.exec("SELECT Name FROM TableSets WHERE Id = " + QString::number(CurrentUserInfo.TableSetId)))
-	{
-		query.next();
-		TableSetName = query.value(0).toString();
+	
 
-		query.exec("SELECT Name,Id FROM Roles_" + TableSetName);
+		query.exec("SELECT Name,Id FROM Roles WHERE TableSetId = " + QString::number(CurrentUserInfo.TableSetId));
 		QSqlRecord record = query.record();
 		while (query.next())
 		{
@@ -82,7 +79,7 @@ void RoleManagerWindow::GenerateRoleList()
 				item->setProperty("Checked", CheckBox->isChecked());
 			});
 		}
-	}
+	
 }
 
 

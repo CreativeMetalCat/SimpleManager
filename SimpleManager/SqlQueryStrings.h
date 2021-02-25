@@ -16,36 +16,17 @@ This way it's abstarcted and less likely to cause issues
 //#define MYSQL
 
 #ifdef MYSQL // define commands compatible with MySQL
-//a simple macro-string for query for checking if table exists
-#define DOES_TABLE_EXISTS_STRING(type,tableName) "SELECT * FROM information_schema.tables WHERE table_schema = 'Users'AND table_name = '" + tableType + "_" + tableName + "' LIMIT 1; "
 
 namespace SqlHelpers
 {
-	static QString GetTableExistanceCheckString(QString tableType, QString tableName)
-	{
-		return "SELECT * FROM information_schema.tables WHERE table_schema = 'Users'AND table_name = '" + tableType + "_" + tableName + "' LIMIT 1; ";
-	}
+	
 }
 
 #else // define commands compatible with SQLite
-//a simple macro-string for simplification of writing the table creation query
-#define ROLE_TABLE_CREATION_STRING(type,tableName) "CREATE TABLE " + tableType+"_" + tableName + " (Id	INTEGER NOT NULL UNIQUE,Name	TEXT NOT NULL DEFAULT 'Rolename' UNIQUE,ChildRoles	TEXT NOT NULL DEFAULT '{}',PRIMARY KEY(Id AUTOINCREMENT))"
-
-
-//a simple macro-string for query for checking if table exists
-#define DOES_TABLE_EXISTS_STRING(type,tableName) "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableType+"_" + tableName + "';"
 
 namespace SqlHelpers
 {
-	static QString GetRoleTableCreationString(QString tableType, QString tableName)
-	{
-		return "CREATE TABLE " + tableType+"_" + tableName + " (Id	INTEGER NOT NULL UNIQUE,Name	TEXT NOT NULL DEFAULT 'Rolename',ChildRoles	TEXT NOT NULL DEFAULT '{}',PRIMARY KEY(Id AUTOINCREMENT))";
-	}
-
-	static QString GetTableExistanceCheckString(QString tableType, QString tableName)
-	{
-		return "SELECT name FROM sqlite_master WHERE type='table' AND name='" + tableType + "_" + tableName + "';";
-	}
+	
 }
 #endif // MYSQL
 
