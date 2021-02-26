@@ -71,7 +71,7 @@ bool UserManagerItem::eventFilter(QObject* object, QEvent* event)
 
 		}
 	}
-	return false;
+	return false; 
 }
 
 UserManagerItem::~UserManagerItem()

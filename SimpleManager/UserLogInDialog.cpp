@@ -42,15 +42,17 @@ void UserLogInDialog::AttemptToLogIn()
 					
 					if (password == query.value(record.indexOf("Password")).toString())
 					{
-						//we found the user and info is correct
-						ManagerInfo::SUserInfo info;
-						info.Name = query.value(record.indexOf("Name")).toString();
-						info.Password = query.value(record.indexOf("Password")).toString();
-						info.Id = query.value(record.indexOf("Id")).toInt();
-						info.TableSetId = query.value(record.indexOf("TableSetId")).toInt();
+						//we found the user and Info is correct
+						Info.Name = query.value(record.indexOf("Name")).toString();
+						Info.Password = query.value(record.indexOf("Password")).toString();
+						Info.Id = query.value(record.indexOf("Id")).toInt();
+						Info.TableSetId = query.value(record.indexOf("TableSetId")).toInt();
+						//1 is true, 0 is false - basics of programming
+						//Info.IsAdmin = (query.value(record.indexOf("Admin")).toInt() == 1);
 
+						auto roleStringBytes = query.value(record.indexOf("RoleId")).toString().remove("'").toUtf8();
 						//for simplicity of reading and writing roles are stores as json array
-						QJsonObject docObj = QJsonDocument::fromJson(query.value(record.indexOf("Roles")).toByteArray()).object();
+						QJsonObject docObj = QJsonDocument::fromJson(roleStringBytes).object();
 						if (docObj["roles"].isArray())
 						{
 							auto tempArray = docObj["roles"].toArray();
@@ -58,17 +60,22 @@ void UserLogInDialog::AttemptToLogIn()
 							{
 								if ((*it).isDouble())
 								{
-									info.Roles.append((*it).toInt());
+									Info.Roles.append((*it).toInt());
+									qWarning() << (*it).toInt();
 								}
 							}
 						}
+						else
+						{
+							qWarning() << query.value(record.indexOf("RoleId")).toString();
+						}
 
-						//Contact info is already stored as json object in sturct so we just find it and assign it
-						docObj = QJsonDocument::fromJson(query.value(record.indexOf("ContactInfo")).toByteArray()).object();
-						info.ContactInfo = docObj;
+						//Contact Info is already stored as json object in sturct so we just find it and assign it
+						//docObj = QJsonDocument::fromJson(query.value(record.indexOf("ContactInfo")).toByteArray()).object();
+						//Info.ContactInfo = docObj;
 
-						emit OnLogInSuccessful(info);
-						close();
+						emit OnLogInSuccessful();
+						
 						return;
 					}
 					else

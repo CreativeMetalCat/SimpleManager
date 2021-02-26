@@ -34,7 +34,11 @@ void UserManager::ShowUserCreationWindow()
 {
 	UserAdditionWindow* userAdd = new UserAdditionWindow(this);
 	userAdd->show();
-	connect(userAdd, &UserAdditionWindow::OnUserCreationFinished, this, &UserManager::WriteNewUser);
+	connect(userAdd, &UserAdditionWindow::OnUserCreationFinished, this, [this, userAdd]()
+	{
+		this->WriteNewUser(userAdd->Info);
+		userAdd->close();
+	});
 }
 
 UserManager::~UserManager()
@@ -53,12 +57,14 @@ void UserManager::GenerateUserList()
 	{
 		if (query.value(record.indexOf("TableSetId")).toInt() == CurrentUserInfo.TableSetId)
 		{
-			doc = QJsonDocument::fromJson(query.value(record.indexOf("RoleId")).toByteArray());
+			auto roleStringBytes = query.value(record.indexOf("RoleId")).toString().remove("'").toUtf8();
+			doc = QJsonDocument::fromJson(roleStringBytes);
 			object = doc.object();
 			// object["roles"]; <- this is the array we are looking for
 
 			QVector<int>RoleIds = QVector<int>();
 
+			
 			//in case something went wrong when writting to the table
 			if (object["roles"].isArray())
 			{
@@ -71,15 +77,11 @@ void UserManager::GenerateUserList()
 					}
 				}
 			}
-
-			UserManagerItem* item = new UserManagerItem(
-				{
-				query.value(record.indexOf("Id")).toInt(),
-				query.value(record.indexOf("Name")).toString(),
-				RoleIds
-				},
-				DataBase,
-				this);
+			ManagerInfo::SUserInfo info;
+			info.Id = query.value(record.indexOf("Id")).toInt();
+			info.Name = query.value(record.indexOf("Name")).toString();
+			info.Roles = RoleIds;
+			UserManagerItem* item = new UserManagerItem(info,DataBase,this);
 
 			scrollBox->addWidget(item);
 		}
@@ -139,24 +141,23 @@ void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 		}
 	}
 
-	QString ContactInfoString;
-	QStringList keys = userInfo.ContactInfo.keys();
-	for (auto it = keys.begin(); it != keys.end(); ++it)
-	{
-		ContactInfoString += "\"" + (*it) + "\":\"" + userInfo.ContactInfo.value((*it)).toString() + "\"";
-		//if there is still something else we have to append comma otherwise JSON file won't work
-		if ((it + 1) != keys.end())
-		{
-			ContactInfoString += ",";
-		}
-	}
+	//QString ContactInfoString;
+	//for (auto it = userInfo.ContactInfo.begin(); it != userInfo.ContactInfo.end(); ++it)
+	//{
+	//	ContactInfoString += "\"" + (*it).TypeName + "\":\"" + (*it).Info + "\"";
+	//	//if there is still something else we have to append comma otherwise JSON file won't work
+	//	if ((it + 1) != userInfo.ContactInfo.end())
+	//	{
+	//		ContactInfoString += ",";
+	//	}
+	//}
 
 	QSqlQuery query;
 	query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);");
 	query.bindValue(":Name", userInfo.Name);
 	query.bindValue(":Password", userInfo.Password);
 	query.bindValue(":RoleId", "'{\"roles\":[" + RoleString + "]}'");
-	query.bindValue(":ContactInfo", ContactInfoString);
+	query.bindValue(":ContactInfo", "{}");
 	query.bindValue(":TableSetId", CurrentUserInfo.TableSetId);
 
 	//this adds the user and returns the data at the same time

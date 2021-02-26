@@ -75,28 +75,40 @@ void TableCreationWindow::AttemptToCreateTable()
 
 					user.TableSetId = TableSetId;
 
+					user.IsAdmin = true;
 
+					
 
 					QSqlQuery query;
+					//add defult admin role
+					query.exec("INSERT INTO Roles (Name,TableSetId,Admin) VALUES ('Admin'," + QString::number(TableSetId) + ",1)");
+
+					//read the new id. Because it's a new account there will be only one Role with that TableSetId
+					query.exec("SELECT Id FROM Roles WHERE TableSetId = " + QString::number(TableSetId) + " AND Name = 'Admin'");
+					query.next();
+					int roleId = query.value(0).toInt();
+					user.Roles.append(roleId);
+
+
 					query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);");
 					query.bindValue(":Name", ui.lineEdit_Name->text());
 					query.bindValue(":Password", QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex()));
 					//it's generated like that because the newly created db will only have on, all powerful, role
-					query.bindValue(":RoleId", "'{\"roles\":[0]}'");
+					query.bindValue(":RoleId", "'{\"roles\":["+ QString::number(roleId) + "]}'");
 					query.bindValue(":ContactInfo", "");
 					//assign user to be a part of newly created db
 					query.bindValue(":TableSetId", TableSetId);
-
-					//this adds the user and returns the data at the same time
 					query.exec();
-					query.exec("SELECT * FROM TableSets Where id = last_insert_rowid()");
-
-					record = query.record();
+					qWarning() << query.lastError().text();
+					query.exec("SELECT * FROM Users Where id = last_insert_rowid()");
 					query.next();
+					
+					record = query.record();
 
 					user.Id = query.value(record.indexOf("Id")).toInt();
 
 					emit OnFinished(user);
+					
 					close();
 				}
 				qWarning() << query.lastError().text();

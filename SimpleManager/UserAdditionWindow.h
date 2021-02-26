@@ -13,10 +13,11 @@ public:
 	UserAdditionWindow(QWidget *parent = Q_NULLPTR);
 	~UserAdditionWindow();
 
+	ManagerInfo::SUserInfo Info;
 signals:
-	void OnUserCreationFinished(ManagerInfo::SUserInfo);
+	void OnUserCreationFinished();
 private:
-
+	
 	void CreateUserInfo();
 
 	Ui::UserAdditionWindow ui;

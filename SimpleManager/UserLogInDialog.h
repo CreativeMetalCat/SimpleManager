@@ -16,8 +16,9 @@ public:
 	UserLogInDialog(QSqlDatabase dataBase, QWidget *parent = Q_NULLPTR);
 	~UserLogInDialog();
 
+	ManagerInfo::SUserInfo Info;
 signals:
-	void OnLogInSuccessful(ManagerInfo::SUserInfo);
+	void OnLogInSuccessful();
 private slots:
 	void AttemptToLogIn();
 

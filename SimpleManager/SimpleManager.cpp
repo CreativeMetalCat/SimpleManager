@@ -1,5 +1,6 @@
 #include "SimpleManager.h"
 #include "RoleManagerWindow.h"
+#include "TableSettingsTab.h"
 
 SimpleManager::SimpleManager(QWidget *parent)
     : QMainWindow(parent)
@@ -12,7 +13,11 @@ SimpleManager::SimpleManager(QWidget *parent)
         UserLogInDialog* dialog = new UserLogInDialog(Database, this);
         dialog->show();
 
-        connect(dialog, &UserLogInDialog::OnLogInSuccessful, this, &SimpleManager::GenerateTabs);
+        connect(dialog, &UserLogInDialog::OnLogInSuccessful, this, [this, dialog]()
+        {
+            this->GenerateTabs(dialog->Info);
+            dialog->close();
+        });
     }
 }
 
@@ -24,4 +29,10 @@ void SimpleManager::GenerateTabs(ManagerInfo::SUserInfo info)
 
     RoleManagerWindow* roles = new RoleManagerWindow(info, Database, this);
     ui.tabWidget->addTab(roles, "Role Manager");
+
+    if (info.IsAdmin)
+    {
+        TableSettingsTab* settings = new TableSettingsTab(this);
+        ui.tabWidget->addTab(settings, "Settings");
+    }
 }

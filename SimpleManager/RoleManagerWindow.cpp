@@ -5,6 +5,7 @@
 #include <QLayout>
 #include <QCheckBox>
 #include <QSqlError>
+#include <QDebug>
 
 RoleManagerWindow::RoleManagerWindow(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
 	: QWidget(parent), DataBase(dataBase), CurrentUserInfo(currentUserInfo)
@@ -35,7 +36,7 @@ void RoleManagerWindow::DeleteRoles()
 		{
 			if ((*it)->property("Checked").toBool())
 			{
-				if (query.exec("DELETE FROM Roles_" + TableSetName + " WHERE Id = " + QString::number((*it)->property("RoleId").toInt())))
+				if (query.exec("DELETE FROM Roles WHERE Id = " + QString::number((*it)->property("RoleId").toInt())))
 				{
 					Items.removeOne(*it);
 					delete (*it);

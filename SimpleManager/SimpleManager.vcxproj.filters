@@ -62,6 +62,9 @@
     <ClCompile Include="RoleManagerItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TableSettingsTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="UserManager.h">
@@ -86,6 +89,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="RoleManagerItem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TableSettingsTab.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -115,6 +121,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="RoleManagerItem.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="TableSettingsTab.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

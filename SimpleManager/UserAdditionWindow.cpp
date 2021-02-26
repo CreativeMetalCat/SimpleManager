@@ -19,18 +19,15 @@ UserAdditionWindow::~UserAdditionWindow()
 
 void UserAdditionWindow::CreateUserInfo()
 {
-	SUserInfo info;
 	/*
 	* info.Id and info.TableSetId will be set by the class that has direct access to database and user info, based on that info
 	*/
-	info.Name = ui.lineEdit_Name->text();
+	Info.Name = ui.lineEdit_Name->text();
 
 	//we convert password into encrypted string so we would not write password in the table
-	info.Password = QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex());
+	Info.Password = QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex());
 
-	info.ContactInfo["email"] = "nothing@fakeserver.fake";
+	//Info.ContactInfo.append({ "email","nothing@fakeserver.fake" });
 
-	emit OnUserCreationFinished(info);
-
-	close();
+	emit OnUserCreationFinished();
 }
