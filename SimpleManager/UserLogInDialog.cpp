@@ -55,12 +55,22 @@ void UserLogInDialog::AttemptToLogIn()
 						QJsonObject docObj = QJsonDocument::fromJson(roleStringBytes).object();
 						if (docObj["roles"].isArray())
 						{
+							QSqlQuery roleSearch;
 							auto tempArray = docObj["roles"].toArray();
 							for (auto it = tempArray.begin(); it != tempArray.end(); ++it)
 							{
 								if ((*it).isDouble())
 								{
 									Info.Roles.append((*it).toInt());
+									//if we still are not sure if user is an admin we do a check
+									if (!Info.IsAdmin)
+									{
+										roleSearch.exec("SELECT Admin FROM Roles WHERE id = " + QString::number((*it).toInt()));
+										if (roleSearch.next())
+										{
+											if (roleSearch.value(0).toInt() == 1) { Info.IsAdmin = true; }
+										}
+									}
 									qWarning() << (*it).toInt();
 								}
 							}
