@@ -25,6 +25,10 @@ void TableSettingsTab::Delete()
 		//check if code is correct
 		if (query.value(0).toString() == password)
 		{
+			query.exec("DELETE FROM Roles WHERE TableSetId = " + QString::number(CurrentUserInfo.TableSetId));
+			query.exec("DELETE FROM Users WHERE TableSetId = " + QString::number(CurrentUserInfo.TableSetId));
+			query.exec("DELETE FROM TableSets WHERE Id = " + QString::number(CurrentUserInfo.TableSetId));
+
 			//start deletion sequence
 			emit OnTableSetDeleted();
 		}
