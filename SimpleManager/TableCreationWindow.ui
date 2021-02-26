@@ -59,6 +59,26 @@
       <item>
        <widget class="QLineEdit" name="lineEdit_DBName"/>
       </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="toolTip">
+         <string>Control code is used for making sure that dangerous operations(like data deletion) could not be done without special access</string>
+        </property>
+        <property name="locale">
+         <locale language="Russian" country="Russia"/>
+        </property>
+        <property name="text">
+         <string>Control Code</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_Code">
+        <property name="toolTip">
+         <string>Control code is used for making sure that dangerous operations(like data deletion) could not be done without special access</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -86,7 +106,7 @@
            <x>0</x>
            <y>0</y>
            <width>360</width>
-           <height>105</height>
+           <height>60</height>
           </rect>
          </property>
         </widget>

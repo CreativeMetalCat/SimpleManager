@@ -54,7 +54,9 @@ void TableCreationWindow::AttemptToCreateTable()
 		{
 			QSqlQuery query;
 
-			if (query.exec("INSERT INTO TableSets (name) VALUES (\"" + ui.lineEdit_DBName->text() + "\")"))
+			auto code = QString(QCryptographicHash::hash(ui.lineEdit_Code->text().toUtf8(),
+				QCryptographicHash::Md5).toHex());
+			if (query.exec("INSERT INTO TableSets (name,ControlCode) VALUES (\"" + ui.lineEdit_DBName->text() + "\",\""+ code+"\")"))
 			{
 
 				int TableSetId = 0;
