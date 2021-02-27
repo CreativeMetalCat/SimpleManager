@@ -9,6 +9,7 @@
 #include <QSqlError>
 #include <QMessageBox>
 #include <QSqlQuery>
+#include <QGroupBox>
 
 
 UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
@@ -46,6 +47,11 @@ void UserManager::ShowUserCreationWindow()
 
 	mainLayout->addWidget(area);
 
+	QGroupBox* roleBox = new QGroupBox("Roles", dialog);
+	QVBoxLayout* roleBoxLayout = new QVBoxLayout(roleBox);
+	roleBox->setLayout(roleBoxLayout);
+	areaLayout->addWidget(roleBox);
+
 	if (DataBase.isOpen())
 	{
 		QSqlQuery query;
@@ -54,13 +60,41 @@ void UserManager::ShowUserCreationWindow()
 		QSqlRecord record = query.record();
 		while (query.next())
 		{
+			bool canBeDisplayed = false;
+			QVector<QString> tableGroups = ManagerInfo::ConvertJsonStringToStringArray(query.value(record.indexOf("Groups")).toString(), "groups");
+			for (auto it = tableGroups.begin(); it != tableGroups.end(); ++it)
+			{
+				int id;
+				if (CurrentUserInfo.ContainsRoleFromGroup(*it, id))
+				{
+					if (CurrentUserInfo.RolesInfo[id].PowerLevel < query.value(record.indexOf("PowerLevel")).toInt())
+					{
+						canBeDisplayed = true;
+						break;
+					}
+				}
+			}
+			if (canBeDisplayed)
+			{
+				QWidget* role = new QWidget(this);
+				QHBoxLayout* mainLayout = new QHBoxLayout(role);
+				role->setLayout(mainLayout);
 
-			QJsonObject groups = QJsonDocument::fromJson(query.value(record.indexOf("Groups")).toString().toUtf8()).object();
+				QCheckBox* checkBox = new QCheckBox(role);
+				mainLayout->addWidget(checkBox);
 
-			QWidget* role = new QWidget(this);
+				QLabel* label = new QLabel(query.value(record.indexOf("Name")).toString(),this);
+				mainLayout->addWidget(label);
+
+				role->setProperty("Id", query.value(record.indexOf("Id")).toInt());
+
+				roleBoxLayout->addWidget(role);
+			}
 			
 		}
 	}
+
+	dialog->exec();
 }
 
 UserManager::~UserManager()
@@ -77,7 +111,9 @@ void UserManager::GenerateUserList()
 	QJsonObject object;
 	while (query.next())
 	{
-		if (query.value(record.indexOf("TableSetId")).toInt() == CurrentUserInfo.TableSetId)
+		auto uiui = ManagerInfo::ConvertJsonStringToIntArray(query.value(record.indexOf("TableSetId")).toString(),"tables");
+		if (ManagerInfo::ConvertJsonStringToIntArray(query.value(record.indexOf("TableSetId")).toString(),
+			"tables").contains(CurrentUserInfo.TableSetId))
 		{
 			auto roleStringBytes = query.value(record.indexOf("RoleId")).toString().remove("'").toUtf8();
 			doc = QJsonDocument::fromJson(roleStringBytes);

@@ -103,8 +103,9 @@ void UserLogInDialog::AttemptToLogIn()
 									ManagerInfo::SRoleInfo role;
 									
 									//read and add role group info
-									roleSearch.exec("SELECT Admin,Groups,Name,Power FROM Roles WHERE id = " + QString::number((*it).toInt()));
+									roleSearch.exec("SELECT Admin,Groups,Name,PowerLevel FROM Roles WHERE id = " + QString::number((*it).toInt()));
 									roleRecord = roleSearch.record();
+									qWarning() << (roleSearch.lastError().text() == ""? QString::number((*it).toInt()) : roleSearch.lastError().text());
 									if (roleSearch.next())
 									{
 										role.Id = (*it).toInt();
@@ -123,7 +124,7 @@ void UserLogInDialog::AttemptToLogIn()
 											if (roleSearch.value(0).toInt() == 1) { Info.IsAdmin = true; }
 										}
 									}
-									qWarning() << (*it).toInt();
+									
 								}
 							}
 						}
