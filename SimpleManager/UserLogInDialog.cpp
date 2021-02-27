@@ -50,13 +50,50 @@ void UserLogInDialog::AttemptToLogIn()
 						//1 is true, 0 is false - basics of programming
 						//Info.IsAdmin = (query.value(record.indexOf("Admin")).toInt() == 1);
 
+						QJsonObject obj = QJsonDocument::fromJson(query.value(record.indexOf("TableSetId")).toString().toUtf8()).object();
+						qWarning() << query.value(record.indexOf("TableSetId")).toString();
+						if (obj["tables"].isArray())
+						{
+							QDialog* dbSelection = new QDialog(this);
+
+							dbSelection->setFixedSize(200, 200);
+							dbSelection->setSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
+							QGridLayout* grid = new QGridLayout(dbSelection);
+							QScrollArea* area = new QScrollArea(dbSelection);
+							QVBoxLayout* layout = new QVBoxLayout(area);
+
+							dbSelection->setLayout(grid);
+							grid->addWidget(area);
+							area->setLayout(layout);
+
+							QJsonArray array = obj["tables"].toArray();
+							QSqlQuery tableSearch;
+							for (auto it = array.begin(); it != array.end(); ++it)
+							{
+								qWarning() << QString::number((*it).toInt());
+								tableSearch.exec("SELECT Name FROM TableSets WHERE Id = " + QString::number((*it).toInt()));
+								if (tableSearch.next())
+								{
+									QPushButton* button = new QPushButton(tableSearch.value(0).toString(), this);
+									button->setProperty("Id", (*it).toInt());
+									connect(button, &QPushButton::clicked, this, [this, button, dbSelection]()
+									{
+										Info.TableSetId = button->property("Id").toInt();
+										dbSelection->close();
+									});
+									layout->addWidget(button);
+								}
+							}
+							dbSelection->exec();
+						}
+
 						auto roleStringBytes = query.value(record.indexOf("RoleId")).toString().remove("'").toUtf8();
 						//for simplicity of reading and writing roles are stores as json array
 						QJsonObject docObj = QJsonDocument::fromJson(roleStringBytes).object();
-						if (docObj["roles"].isArray())
+						if (docObj[QString::number(Info.TableSetId)].isArray())
 						{
 							QSqlQuery roleSearch;
-							auto tempArray = docObj["roles"].toArray();
+							auto tempArray = docObj[QString::number(Info.TableSetId)].toArray();
 							for (auto it = tempArray.begin(); it != tempArray.end(); ++it)
 							{
 								if ((*it).isDouble())
@@ -83,48 +120,6 @@ void UserLogInDialog::AttemptToLogIn()
 						//Contact Info is already stored as json object in sturct so we just find it and assign it
 						//docObj = QJsonDocument::fromJson(query.value(record.indexOf("ContactInfo")).toByteArray()).object();
 						//Info.ContactInfo = docObj;
-
-						
-
-						QJsonObject obj = QJsonDocument::fromJson(query.value(record.indexOf("TableSetId")).toString().toUtf8()).object();
-						qWarning() << query.value(record.indexOf("TableSetId")).toString();
-						if (obj["tables"].isArray())
-						{
-							QDialog* dbSelection = new QDialog(this);
-
-							dbSelection->setFixedSize(200, 200);
-							dbSelection->setSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
-							QGridLayout* grid = new QGridLayout(dbSelection);
-							QScrollArea* area = new QScrollArea(dbSelection);
-							QVBoxLayout* layout = new QVBoxLayout(area);
-							
-							dbSelection->setLayout(grid);
-							grid->addWidget(area);
-							area->setLayout(layout);
-
-							QJsonArray array = obj["tables"].toArray();
-							QSqlQuery tableSearch;
-							for (auto it = array.begin(); it != array.end(); ++it)
-							{
-								qWarning() << QString::number((*it).toInt());
-								tableSearch.exec("SELECT Name FROM TableSets WHERE Id = " + QString::number((*it).toInt()));
-								if (tableSearch.next())
-								{
-									QPushButton* button = new QPushButton(tableSearch.value(0).toString(), this);
-									button->setProperty("Id", (*it).toInt());
-									connect(button, &QPushButton::clicked, this, [this, button, dbSelection]()
-									{
-										Info.TableSetId = button->property("Id").toInt();
-										dbSelection->close();
-									});
-									layout->addWidget(button);
-								}
-							}
-							dbSelection->exec();
-
-							
-						}
-
 
 						emit OnLogInSuccessful();
 						
