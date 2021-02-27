@@ -109,11 +109,11 @@ void UserLogInDialog::AttemptToLogIn()
 									if (roleSearch.next())
 									{
 										role.Id = (*it).toInt();
-										role.Name = query.value(roleRecord.indexOf("Name")).toString();
-										role.PowerLevel = query.value(roleRecord.indexOf("Id")).toInt();
+										role.Name = roleSearch.value(roleRecord.indexOf("Name")).toString();
+										role.PowerLevel = roleSearch.value(roleRecord.indexOf("PowerLevel")).toInt();
 										role.TableSetId = Info.TableSetId;
-
-										role.Groups = ConvertJsonStringToStringArray(query.value(roleRecord.indexOf("Groups")).toString(),"groups");
+										qWarning() << roleSearch.value(roleRecord.indexOf("Groups")).toString();
+										role.Groups = ConvertJsonStringToStringArray(roleSearch.value(roleRecord.indexOf("Groups")).toString(),"groups");
 
 										//add role info
 										Info.RolesInfo.append(role);
