@@ -3,7 +3,6 @@
 #include <QWidget>
 #include "ui_UserManager.h"
 #include <QLayout>
-#include "RoleSelectionWindow.h"
 #include "UserManagerItem.h"
 
 

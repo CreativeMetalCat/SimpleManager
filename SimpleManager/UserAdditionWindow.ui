@@ -7,51 +7,44 @@
     <x>0</x>
     <y>0</y>
     <width>381</width>
-    <height>307</height>
+    <height>184</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>UserAdditionWindow</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLineEdit" name="lineEdit_Password"/>
-   </item>
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Username</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item>
+    <widget class="QLineEdit" name="lineEdit_Name"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Id</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="lineEdit_Id"/>
+   </item>
+   <item>
     <widget class="QPushButton" name="button_Roles">
      <property name="text">
       <string>Select Roles</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEdit_Name"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>ContactInfo</string>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

@@ -50,6 +50,7 @@ void UserLogInDialog::AttemptToLogIn()
 						//1 is true, 0 is false - basics of programming
 						//Info.IsAdmin = (query.value(record.indexOf("Admin")).toInt() == 1);
 
+						//get id of table set that player wants to work with
 						QJsonObject obj = QJsonDocument::fromJson(query.value(record.indexOf("TableSetId")).toString().toUtf8()).object();
 						qWarning() << query.value(record.indexOf("TableSetId")).toString();
 						if (obj["tables"].isArray())
@@ -93,17 +94,31 @@ void UserLogInDialog::AttemptToLogIn()
 						if (docObj[QString::number(Info.TableSetId)].isArray())
 						{
 							QSqlQuery roleSearch;
+							QSqlRecord roleRecord;
 							auto tempArray = docObj[QString::number(Info.TableSetId)].toArray();
 							for (auto it = tempArray.begin(); it != tempArray.end(); ++it)
 							{
 								if ((*it).isDouble())
 								{
-									Info.Roles.append((*it).toInt());
-									//if we still are not sure if user is an admin we do a check
-									if (!Info.IsAdmin)
+									ManagerInfo::SRoleInfo role;
+									
+									//read and add role group info
+									roleSearch.exec("SELECT Admin,Groups,Name,Power FROM Roles WHERE id = " + QString::number((*it).toInt()));
+									roleRecord = roleSearch.record();
+									if (roleSearch.next())
 									{
-										roleSearch.exec("SELECT Admin FROM Roles WHERE id = " + QString::number((*it).toInt()));
-										if (roleSearch.next())
+										role.Id = (*it).toInt();
+										role.Name = query.value(roleRecord.indexOf("Name")).toString();
+										role.PowerLevel = query.value(roleRecord.indexOf("Id")).toInt();
+										role.TableSetId = Info.TableSetId;
+
+										role.Groups = ConvertJsonStringToStringArray(query.value(roleRecord.indexOf("Groups")).toString(),"groups");
+
+										//add role info
+										Info.RolesInfo.append(role);
+
+										//if we still are not sure if user is an admin we do a check
+										if (!Info.IsAdmin)
 										{
 											if (roleSearch.value(0).toInt() == 1) { Info.IsAdmin = true; }
 										}

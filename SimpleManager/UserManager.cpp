@@ -5,10 +5,10 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QPushButton>
-#include "UserAdditionWindow.h"
 #include <QSqlRecord>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QSqlQuery>
 
 
 UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
@@ -32,13 +32,35 @@ UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase da
 
 void UserManager::ShowUserCreationWindow()
 {
-	UserAdditionWindow* userAdd = new UserAdditionWindow(this);
-	userAdd->show();
-	connect(userAdd, &UserAdditionWindow::OnUserCreationFinished, this, [this, userAdd]()
+	//create user addition dialog
+	QDialog* dialog = new QDialog(this);
+	dialog->setFixedSize(200, 400);
+	dialog->setSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
+
+	QVBoxLayout* mainLayout = new QVBoxLayout(dialog);
+	dialog->setLayout(mainLayout);
+	//are where all roles will be displayed
+	QScrollArea* area = new QScrollArea(dialog);
+	QVBoxLayout* areaLayout = new QVBoxLayout(area);
+	area->setLayout(areaLayout);
+
+	mainLayout->addWidget(area);
+
+	if (DataBase.isOpen())
 	{
-		this->WriteNewUser(userAdd->Info);
-		userAdd->close();
-	});
+		QSqlQuery query;
+		query.exec("SELECT Id,Name,Groups,PowerLevel FROM Roles WHERE TableSetId = " + QString::number(CurrentUserInfo.TableSetId));
+
+		QSqlRecord record = query.record();
+		while (query.next())
+		{
+
+			QJsonObject groups = QJsonDocument::fromJson(query.value(record.indexOf("Groups")).toString().toUtf8()).object();
+
+			QWidget* role = new QWidget(this);
+			
+		}
+	}
 }
 
 UserManager::~UserManager()
@@ -80,7 +102,6 @@ void UserManager::GenerateUserList()
 			ManagerInfo::SUserInfo info;
 			info.Id = query.value(record.indexOf("Id")).toInt();
 			info.Name = query.value(record.indexOf("Name")).toString();
-			info.Roles = RoleIds;
 			UserManagerItem* item = new UserManagerItem(info,DataBase,this);
 
 			scrollBox->addWidget(item);
@@ -131,11 +152,11 @@ void UserManager::DeleteSelectedUsers()
 void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
 {
 	QString RoleString;
-	for (auto it = userInfo.Roles.begin(); it != userInfo.Roles.end(); ++it)
+	for (auto it = userInfo.RolesInfo.begin(); it != userInfo.RolesInfo.end(); ++it)
 	{
-		RoleString += QString::number(*it);
+		RoleString += QString::number((*it).Id);
 		//if there is still something else we have to append comma otherwise JSON file won't work
-		if ((it + 1) != userInfo.Roles.end())
+		if ((it + 1) != userInfo.RolesInfo.end())
 		{
 			RoleString += ",";
 		}

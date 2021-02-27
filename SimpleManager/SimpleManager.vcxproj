@@ -88,17 +88,14 @@
   <ItemGroup>
     <ClCompile Include="RoleManagerItem.cpp" />
     <ClCompile Include="RoleManagerWindow.cpp" />
-    <ClCompile Include="RoleSelectionWindow.cpp" />
     <ClCompile Include="TableCreationWindow.cpp" />
     <ClCompile Include="TableSettingsTab.cpp" />
-    <ClCompile Include="UserAdditionWindow.cpp" />
     <ClCompile Include="UserLogInDialog.cpp" />
     <ClCompile Include="UserManager.cpp" />
     <ClCompile Include="UserManagerItem.cpp" />
     <QtRcc Include="SimpleManager.qrc" />
     <QtUic Include="RoleManagerItem.ui" />
     <QtUic Include="RoleManagerWindow.ui" />
-    <QtUic Include="RoleSelectionWindow.ui" />
     <QtUic Include="SimpleManager.ui" />
     <QtMoc Include="SimpleManager.h" />
     <ClCompile Include="SimpleManager.cpp" />
@@ -117,9 +114,6 @@
     <QtMoc Include="UserManagerItem.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="RoleSelectionWindow.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Info.h" />
     <QtMoc Include="TableSettingsTab.h" />
     <QtMoc Include="RoleManagerWindow.h" />
@@ -127,7 +121,6 @@
     <ClInclude Include="SqlQueryStrings.h" />
     <QtMoc Include="TableCreationWindow.h" />
     <QtMoc Include="UserLogInDialog.h" />
-    <QtMoc Include="UserAdditionWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
