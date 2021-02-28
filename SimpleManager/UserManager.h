@@ -23,7 +23,14 @@ private slots:
 	void ShowUserCreationWindow();
 
 	void DeleteSelectedUsers();
+
+	void AddUserToTable(int userId,QVector<int> roles);
+
 private:
+	/// <summary>
+	/// This value is used during user addition and is used by lambda
+	/// </summary>
+	QVector<int> RoleIds = QVector<int>();
 
 	void WriteNewUser(ManagerInfo::SUserInfo userInfo);
 

@@ -10,7 +10,8 @@
 #include <QMessageBox>
 #include <QSqlQuery>
 #include <QGroupBox>
-
+#include <QLineEdit>
+#include <QIntValidator>
 
 UserManager::UserManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
 	: QWidget(parent),DataBase(dataBase),CurrentUserInfo(currentUserInfo)
@@ -40,6 +41,18 @@ void UserManager::ShowUserCreationWindow()
 
 	QVBoxLayout* mainLayout = new QVBoxLayout(dialog);
 	dialog->setLayout(mainLayout);
+
+	//user id input
+	QLabel* label1 = new QLabel("User Id", dialog);
+	QLineEdit* idInput = new QLineEdit(dialog);
+	idInput->setValidator(new QIntValidator(0, 100, dialog));
+	connect(idInput, &QLineEdit::textChanged, this, [this,dialog, idInput](QString newText)
+	{
+		dialog->setProperty("UserId", newText.toInt());
+	});
+	mainLayout->addWidget(label1);
+	mainLayout->addWidget(idInput);
+
 	//are where all roles will be displayed
 	QScrollArea* area = new QScrollArea(dialog);
 	QVBoxLayout* areaLayout = new QVBoxLayout(area);
@@ -52,6 +65,7 @@ void UserManager::ShowUserCreationWindow()
 	roleBox->setLayout(roleBoxLayout);
 	areaLayout->addWidget(roleBox);
 
+	
 	if (DataBase.isOpen())
 	{
 		QSqlQuery query;
@@ -76,6 +90,8 @@ void UserManager::ShowUserCreationWindow()
 			}
 			if (canBeDisplayed)
 			{
+				int Id = query.value(record.indexOf("Id")).toInt();
+
 				QWidget* role = new QWidget(this);
 				QHBoxLayout* mainLayout = new QHBoxLayout(role);
 				role->setLayout(mainLayout);
@@ -86,7 +102,18 @@ void UserManager::ShowUserCreationWindow()
 				QLabel* label = new QLabel(query.value(record.indexOf("Name")).toString(),this);
 				mainLayout->addWidget(label);
 
-				role->setProperty("Id", query.value(record.indexOf("Id")).toInt());
+				role->setProperty("Id", Id);
+				connect(checkBox, &QCheckBox::clicked, this, [this, Id](bool state)
+				{
+					if (state && !this->RoleIds.contains(Id))
+					{
+						this->RoleIds.append(Id);
+					}
+					else if (this->RoleIds.contains(Id))
+					{
+						this->RoleIds.removeOne(Id);
+					}
+				});
 
 				roleBoxLayout->addWidget(role);
 			}
@@ -94,6 +121,25 @@ void UserManager::ShowUserCreationWindow()
 		}
 	}
 
+	QPushButton* button = new QPushButton("Add", dialog);
+	mainLayout->addWidget(button);
+	connect(button, &QPushButton::clicked, this, [this, button,dialog]()
+	{
+		QSqlQuery query;
+		query.exec("SELECT TableSetId FROM Users WHERE Id = " + QString::number(dialog->property("UserId").toInt()));
+		qWarning() << query.lastError().text();
+		qWarning() << "Id: " + QString::number(dialog->property("UserId").toInt());
+		if (query.next())
+		{
+			//check if user is already in the db. If it is not -> add them 
+			if (!ManagerInfo::ConvertJsonStringToIntArray(query.value(0).toString(),"tables").contains(CurrentUserInfo.TableSetId))
+			{
+				AddUserToTable(dialog->property("UserId").toInt(), this->RoleIds);
+			}
+		}
+		qWarning() << query.lastError().text();
+		dialog->close();
+	});
 	dialog->exec();
 }
 
@@ -183,6 +229,30 @@ void UserManager::DeleteSelectedUsers()
 			}
 		}
 	}
+}
+
+void UserManager::AddUserToTable(int userId, QVector<int> roles)
+{
+	if (DataBase.isOpen())
+	{
+		QSqlQuery query;
+		query.exec("SELECT TableSetId FROM Users WHERE Id = " + QString::number(userId));
+		qWarning() << query.lastError().text();
+		if (query.next())
+		{
+			QJsonObject obj = QJsonDocument::fromJson(query.value(0).toString().toUtf8()).object();
+			if (obj["tables"].isArray())
+			{
+				auto array = obj["tables"].toArray();
+				array.append(CurrentUserInfo.TableSetId);
+				obj["tables"] = array;
+			}
+			QJsonDocument doc = QJsonDocument(obj);
+			query.exec("UPDATE Users SET TableSetId  = '" + QString(doc.toJson()) + "' WHERE Id = " + QString::number(userId));
+			qWarning() << query.lastError().text();
+		}
+	}
+
 }
 
 void UserManager::WriteNewUser(ManagerInfo::SUserInfo userInfo)
