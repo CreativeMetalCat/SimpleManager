@@ -6,6 +6,11 @@
 #include <QMessageBox>
 #include <QCryptographicHash>
 #include <QSqlRecord>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QSqlRecord>
+#include "Info.h"
 
 TableCreationWindow::TableCreationWindow(QSqlDatabase database, QWidget *parent):
 	QDialog(parent),Database(database)
@@ -86,17 +91,24 @@ void TableCreationWindow::AttemptToCreateTable()
 					query.exec("INSERT INTO Roles (Name,TableSetId,Admin) VALUES ('Admin'," + QString::number(TableSetId) + ",1)");
 
 					//read the new id. Because it's a new account there will be only one Role with that TableSetId
-					query.exec("SELECT Id FROM Roles WHERE TableSetId = " + QString::number(TableSetId) + " AND Name = 'Admin'");
+					query.exec("SELECT Id,PowerLevel,Groups FROM Roles WHERE TableSetId = " + QString::number(TableSetId) + " AND Name = 'Admin'");
 					query.next();
-					int roleId = query.value(0).toInt();
-					user.Roles.append(roleId);
+
+					QSqlRecord recordRole = query.record();
+					//record role info
+					ManagerInfo::SRoleInfo role;
+					role.Id = query.value(recordRole.indexOf("Id")).toInt();
+					role.Name = "Admin";
+					role.PowerLevel = 0;
+					role.Groups = ManagerInfo::ConvertJsonStringToStringArray(query.value(recordRole.indexOf("Groups")).toString(), "groups");
+					user.RolesInfo.append(role);
 
 
 					query.prepare("INSERT INTO Users (Name,RoleId,Password,ContactInfo,TableSetId) VALUES (:Name,:RoleId,:Password,:ContactInfo,:TableSetId);");
 					query.bindValue(":Name", ui.lineEdit_Name->text());
 					query.bindValue(":Password", QString(QCryptographicHash::hash(ui.lineEdit_Password->text().toUtf8(), QCryptographicHash::Md5).toHex()));
 					//it's generated like that because the newly created db will only have on, all powerful, role
-					query.bindValue(":RoleId", "'{\"roles\":["+ QString::number(roleId) + "]}'");
+					query.bindValue(":RoleId", "'{\"roles\":["+ QString::number(role.Id) + "]}'");
 					query.bindValue(":ContactInfo", "");
 					//assign user to be a part of newly created db
 					query.bindValue(":TableSetId", TableSetId);

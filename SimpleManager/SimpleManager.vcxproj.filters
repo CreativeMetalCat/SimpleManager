@@ -44,12 +44,6 @@
     <ClCompile Include="UserManagerItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RoleSelectionWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UserAdditionWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UserLogInDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -71,12 +65,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UserManagerItem.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="RoleSelectionWindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="UserAdditionWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="UserLogInDialog.h">
@@ -105,13 +93,7 @@
     <QtUic Include="UserManagerItem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="RoleSelectionWindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtUic Include="UserAdditionWindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="UserLogInDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="TableCreationWindow.ui">
@@ -124,6 +106,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="TableSettingsTab.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="UserLogInDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

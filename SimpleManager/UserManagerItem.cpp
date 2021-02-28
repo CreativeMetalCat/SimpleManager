@@ -1,5 +1,4 @@
 #include "UserManagerItem.h"
-#include "RoleSelectionWindow.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QSqlError>
@@ -12,9 +11,9 @@ UserManagerItem::UserManagerItem(SUserInfo userInfo, QSqlDatabase dataBase,QWidg
 	ui.setupUi(this);
 
 	ui.label_UserName->setText(UserInfo.Name);
-	for (auto it = UserInfo.Roles.begin(); it != UserInfo.Roles.end(); ++it)
+	for (auto it = UserInfo.RolesInfo.begin(); it != UserInfo.RolesInfo.end(); ++it)
 	{
-		ui.label_Roles->setText(ui.label_Roles->text() + QString::number((*it)));
+		ui.label_Roles->setText(ui.label_Roles->text() + QString::number((*it).Id));
 	}
 	ui.label_Roles->installEventFilter(this);
 	ui.label_id->setText(QString::number(UserInfo.Id));
@@ -34,30 +33,30 @@ bool UserManagerItem::IsSelected()
 	return ui.checkBox->isChecked();
 }
 
-void UserManagerItem::RecordRoleChanges(QVector<int> roles)
-{
-	UserInfo.Roles = roles;
-	QString result;
-	QSqlQuery query;
-	for (auto it = roles.begin(); it != roles.end(); ++it)
-	{
-		result += QString::number(*it);
-		if ((it + 1) != roles.end())
-		{
-			result += ",";
-		}
-	}
-	qWarning() << result;
-	if (!query.exec("UPDATE Users SET RoleId='{\"roles\":[" + result + "]}' WHERE Id = " + QString::number(UserInfo.Id)))
-	{
-		qWarning() << query.lastError().text();
-		if (query.lastError().type() == QSqlError::ConnectionError && !DataBase.isOpen())
-		{
-			DataBase.open();
-			RecordRoleChanges(UserInfo.Roles);
-		}
-	}
-}
+//void UserManagerItem::RecordRoleChanges(QVector<int> roles)
+//{
+//	UserInfo.Roles = roles;
+//	QString result;
+//	QSqlQuery query;
+//	for (auto it = roles.begin(); it != roles.end(); ++it)
+//	{
+//		result += QString::number(*it);
+//		if ((it + 1) != roles.end())
+//		{
+//			result += ",";
+//		}
+//	}
+//	qWarning() << result;
+//	if (!query.exec("UPDATE Users SET RoleId='{\"roles\":[" + result + "]}' WHERE Id = " + QString::number(UserInfo.Id)))
+//	{
+//		qWarning() << query.lastError().text();
+//		if (query.lastError().type() == QSqlError::ConnectionError && !DataBase.isOpen())
+//		{
+//			DataBase.open();
+//			RecordRoleChanges(UserInfo.Roles);B
+//		}
+//	}
+//}
 
 bool UserManagerItem::eventFilter(QObject* object, QEvent* event)
 {
@@ -65,9 +64,9 @@ bool UserManagerItem::eventFilter(QObject* object, QEvent* event)
 	{
 		if (event->type() == QEvent::MouseButtonPress)
 		{
-			RoleSelectionWindow* roleSelect = new  RoleSelectionWindow(UserInfo, DataBase, this);
+			/*RoleSelectionWindow* roleSelect = new  RoleSelectionWindow(UserInfo, DataBase, this);
 			connect(roleSelect, &RoleSelectionWindow::OnRolesChosen, this, &UserManagerItem::RecordRoleChanges);
-			roleSelect->show();
+			roleSelect->show();*/
 
 		}
 	}

@@ -3,8 +3,6 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_SimpleManager.h"
 #include "Info.h"
-
-#include "RoleSelectionWindow.h"
 #include "UserManager.h"
 #include "UserLogInDialog.h"
 

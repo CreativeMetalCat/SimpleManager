@@ -24,9 +24,7 @@ public:
 
 	bool IsSelected();
 private slots:
-	void RecordRoleChanges(QVector<int> roles);
-
-
+	//void RecordRoleChanges(QVector<int> roles);
 private:
 
 	QSqlDatabase DataBase;
