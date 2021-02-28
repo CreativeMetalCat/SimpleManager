@@ -16,6 +16,8 @@ public:
 
 private slots:
 	void DeleteGroups();
+
+	void AddGroup();
 private:
 	void GenerateItems();
 

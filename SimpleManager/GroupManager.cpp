@@ -5,8 +5,9 @@
 #include <QLayout>
 #include <QInputDialog>
 #include <QSqlError>
+#include <QMessageBox>
 
-GroupManager::GroupManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget *parent)
+GroupManager::GroupManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase dataBase, QWidget* parent)
 	: QWidget(parent), DataBase(dataBase), CurrentUserInfo(currentUserInfo)
 {
 	ui.setupUi(this);
@@ -14,10 +15,12 @@ GroupManager::GroupManager(ManagerInfo::SUserInfo currentUserInfo, QSqlDatabase 
 	scrollWidget = new QWidget(this);
 	scrollBox = new QVBoxLayout(scrollWidget);
 	ui.scrollArea->setWidget(scrollWidget);
-	
+
 	GenerateItems();
 
 	connect(ui.button_Delete, &QPushButton::clicked, this, &GroupManager::DeleteGroups);
+
+	connect(ui.button_AddUser, &QPushButton::clicked, this, &GroupManager::AddGroup);
 }
 
 void GroupManager::DeleteGroups() 
@@ -73,11 +76,6 @@ void GroupManager::DeleteGroups()
 		writeQuery.exec("UPDATE Roles SET Groups  = '" + QString(doc.toJson()) + "' WHERE Id = " + QString::number(id));
 	}
 
-	Items.clear();
-	for (auto it = scrollBox->children().begin(); it != scrollBox->children().end(); ++it)
-	{
-		delete* it;
-	}
 	GenerateItems();
 }
 
@@ -85,8 +83,39 @@ GroupManager::~GroupManager()
 {
 }
 
+void GroupManager::AddGroup()
+{
+	QString name = QInputDialog::getText(this, "Enter New Name", "");
+	QSqlQuery query;
+	query.exec("SELECT Id FROM GROUPS WHERE Name = " + name + " AND TableSetId = " + QString::number(CurrentUserInfo.TableSetId));
+	if (!query.next())
+	{
+		query.prepare("INSERT INTO Groups (Name,TableSetId) VALUES(:Name,:TableSetId)");
+		query.bindValue(":Name", name);
+		query.bindValue(":TableSetId", QString::number(CurrentUserInfo.TableSetId));
+		query.exec();
+
+		GenerateItems();
+	}
+	else 
+	{
+		QMessageBox::critical(this, "Error!", "Groups with this name already exists in this Database\n Id = " + 
+		query.value(0).toString());
+	}
+
+}
+
 void GroupManager::GenerateItems()
 {
+	if (!Items.isEmpty())
+	{		
+		for (auto it = Items.begin(); it != Items.end(); ++it)
+		{
+			(*it)->deleteLater();
+		}
+		Items.clear();
+	}
+
 	if (DataBase.isOpen())
 	{
 		QSqlQuery query;
