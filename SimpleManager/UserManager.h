@@ -32,7 +32,6 @@ private:
 	/// </summary>
 	QVector<int> RoleIds = QVector<int>();
 
-	void WriteNewUser(ManagerInfo::SUserInfo userInfo);
 
 
 	ManagerInfo::SUserInfo CurrentUserInfo;

@@ -1,6 +1,7 @@
 #include "SimpleManager.h"
 #include "RoleManagerWindow.h"
 #include "TableSettingsTab.h"
+#include "GroupManager.h"
 
 SimpleManager::SimpleManager(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +33,7 @@ void SimpleManager::GenerateTabs(ManagerInfo::SUserInfo info)
     ui.tabWidget->addTab(roles, "Role Manager");
 
     //if user is an admin we allow them to use table set settings menu
+    //we also show group menu only if user is an admin
     if (info.IsAdmin)
     {
         TableSettingsTab* settings = new TableSettingsTab(info,Database,this);
@@ -52,5 +54,8 @@ void SimpleManager::GenerateTabs(ManagerInfo::SUserInfo info)
                 dialog->close();
             });
         });
+
+        GroupManager* groupManager = new GroupManager(info, Database, this);
+        ui.tabWidget->addTab(groupManager, "Groups");
     }
 }

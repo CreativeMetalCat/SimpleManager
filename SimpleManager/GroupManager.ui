@@ -13,15 +13,15 @@
   <property name="windowTitle">
    <string>GroupManager</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPushButton" name="button_AddUser">
          <property name="text">
-          <string>Add New Group</string>
+          <string>Add New User</string>
          </property>
         </widget>
        </item>
@@ -39,7 +39,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
